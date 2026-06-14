@@ -1,0 +1,1 @@
+"""GoalMind backend application package."""

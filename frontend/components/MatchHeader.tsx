@@ -1,0 +1,102 @@
+import Image from "next/image";
+
+import { MatchScoreboard } from "@/components/MatchScoreboard";
+import { TeamFlagGlow } from "@/components/TeamFlagGlow";
+import { isQatarTeam } from "@/lib/isQatarTeam";
+import type { TeamSummary } from "@/types";
+import { formatMatchDate, isLiveStatus, stripDisplayDashes } from "@/lib/utils";
+
+interface MatchHeaderProps {
+  homeTeam: TeamSummary;
+  awayTeam: TeamSummary;
+  date: string;
+  venue: string | null;
+  status: string;
+  homeGoals?: number | null;
+  awayGoals?: number | null;
+}
+
+function LargeTeamBadge({ team }: { team: TeamSummary }) {
+  if (isQatarTeam(team)) {
+    return (
+      <div className="flex flex-col items-center gap-3 text-center">
+        <TeamFlagGlow team={team} size="lg" priority />
+        <p className="max-w-[7rem] font-display type-title text-base sm:max-w-[10rem] sm:text-lg md:max-w-none md:text-xl">
+          {stripDisplayDashes(team.name)}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-3 text-center">
+      <div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 border-card-border bg-card-border sm:h-20 sm:w-20 md:h-24 md:w-24">
+        {team.logo ? (
+          <Image
+            src={team.logo}
+            alt={`${team.name} flag`}
+            width={96}
+            height={96}
+            className="h-full w-full object-cover"
+            priority
+          />
+        ) : (
+          <span className="text-lg font-extrabold text-muted">
+            {team.code ?? team.name.slice(0, 3).toUpperCase()}
+          </span>
+        )}
+      </div>
+      <p className="max-w-[7rem] font-display type-title text-base sm:max-w-[10rem] sm:text-lg md:max-w-none md:text-xl">
+        {stripDisplayDashes(team.name)}
+      </p>
+    </div>
+  );
+}
+
+export function MatchHeader({
+  homeTeam,
+  awayTeam,
+  date,
+  venue,
+  status,
+  homeGoals = null,
+  awayGoals = null,
+}: MatchHeaderProps) {
+  const isLive = isLiveStatus(status);
+
+  return (
+    <header
+      className={`rounded-xl border bg-card p-4 sm:p-6 md:p-8 ${
+        isLive ? "border-loss/40 ring-1 ring-loss/20" : "border-card-border"
+      }`}
+    >
+      <div className="type-caps mb-4 flex flex-wrap items-center justify-center gap-2 text-center text-xs text-muted">
+        <span>{formatMatchDate(date)}</span>
+        <span aria-hidden="true">·</span>
+        {isLive ? (
+          <span className="flex items-center gap-1.5 rounded-full bg-loss/15 px-2 py-0.5 font-bold text-loss ring-1 ring-loss/30">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-loss" aria-hidden="true" />
+            LIVE
+          </span>
+        ) : (
+          <span>{status}</span>
+        )}
+      </div>
+
+      <div className="flex items-center justify-center gap-3 sm:gap-6 md:gap-10">
+        <LargeTeamBadge team={homeTeam} />
+        <MatchScoreboard
+          homeGoals={homeGoals}
+          awayGoals={awayGoals}
+          status={status}
+          size="lg"
+        />
+        <LargeTeamBadge team={awayTeam} />
+      </div>
+
+      {venue && (
+        <p className="mt-4 text-center text-sm text-muted">{stripDisplayDashes(venue)}</p>
+      )}
+    </header>
+  );
+}

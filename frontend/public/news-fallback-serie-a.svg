@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="Football news">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a1f0a"/>
+      <stop offset="100%" stop-color="#003f00"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="url(#g)"/>
+  <circle cx="320" cy="200" r="72" fill="none" stroke="#00ff87" stroke-width="3" opacity="0.35"/>
+  <path d="M320 128 L352 168 L336 208 L304 208 L288 168 Z" fill="#00ff87" opacity="0.2"/>
+</svg>

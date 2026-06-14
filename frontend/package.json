@@ -1,0 +1,30 @@
+{
+  "name": "goalmind-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "ulimit -n 10240 2>/dev/null; WATCHPACK_POLLING=true next dev",
+    "dev:clean": "lsof -t -i :3000 -i :3001 | xargs kill -9 2>/dev/null; rm -rf .next && npm run dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@netlify/plugin-nextjs": "^5.9.4",
+    "next": "^14.2.28",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3"
+  }
+}
