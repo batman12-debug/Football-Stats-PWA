@@ -14,9 +14,6 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-  [plugins.inputs]
-    maxDuration = 26
-
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["sharp"]
