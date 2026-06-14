@@ -11,7 +11,11 @@ export default async function HomePage() {
         <div className="rounded-xl border border-card-border bg-card p-8 text-center">
           <h1 className="text-2xl font-extrabold">GoalMind</h1>
           <p className="mt-4 text-muted">
-            Tournament data unavailable. Ensure the backend is running and try again shortly.
+            Tournament data unavailable. The API backend is not reachable from this site.
+          </p>
+          <p className="mt-3 text-sm text-muted">
+            On Netlify, set <code className="text-white/90">API_URL</code> to your hosted
+            FastAPI URL (HTTPS), then redeploy. The backend cannot run on localhost.
           </p>
         </div>
       </main>

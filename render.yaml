@@ -1,0 +1,26 @@
+# Deploy backend: https://render.com → New → Blueprint → connect this repo
+# Then set API_URL on Netlify to the Render service URL (https://....onrender.com)
+
+services:
+  - type: web
+    name: goalmind-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+      - key: DATA_SOURCE
+        value: hybrid
+      - key: ENVIRONMENT
+        value: production
+      - key: NEXT_PUBLIC_FRONTEND_URL
+        value: https://footballerz.netlify.app
+      - key: CORS_ORIGINS
+        value: https://footballerz.netlify.app
+      - key: TRUST_PROXY_HEADERS
+        value: "true"
+      # Add these in the Render dashboard (sync from backend/.env):
+      # SUPABASE_URL, SUPABASE_KEY, UPSTASH_REDIS_URL, UPSTASH_REDIS_TOKEN, ADMIN_API_KEY
