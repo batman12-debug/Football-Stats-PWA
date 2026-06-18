@@ -1,10 +1,11 @@
-# GoalMind — Netlify deploys the Next.js app from frontend/
+# CheckBoard — Netlify deploys the Next.js app from frontend/
 # IMPORTANT: Connect GitHub/GitLab (not drag-and-drop). Next.js has no index.html.
 #
-# Netlify UI (when importing repo):
-#   Base directory: leave empty (this file sets base = "frontend")
-#   Build command:   leave empty (read from here)
-#   Publish directory: leave empty in UI (this file sets publish = ".next" relative to base)
+# Netlify UI (Site configuration → Build & deploy → Continuous deployment → Build settings):
+#   Base directory:     LEAVE EMPTY (this file sets base = "frontend")
+#   Build command:      LEAVE EMPTY (read from here)
+#   Publish directory:  LEAVE EMPTY (this file sets publish = ".next")
+# If Base or Publish are set in the UI, they OVERRIDE this file and the Next.js plugin will fail.
 
 [build]
   base = "frontend"
