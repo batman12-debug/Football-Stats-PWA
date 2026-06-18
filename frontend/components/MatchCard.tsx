@@ -18,7 +18,7 @@ interface MatchCardProps {
   showMatchNumber?: boolean;
 }
 
-function TeamBadge({
+function TeamFlagCircle({
   name,
   code,
   logo,
@@ -30,45 +30,47 @@ function TeamBadge({
   isPlaceholder?: boolean;
 }) {
   if (!isPlaceholder && isQatarTeam({ name, code })) {
-    return (
-      <div className="flex flex-col items-center gap-2 text-center">
-        <TeamFlagGlow team={{ name, code, logo }} size="md" />
-        <span className="max-w-[6rem] truncate text-xs type-ui sm:max-w-[7rem] sm:text-sm">
-          {stripDisplayDashes(name)}
-        </span>
-      </div>
-    );
+    return <TeamFlagGlow team={{ name, code, logo }} size="md" />;
   }
 
   return (
-    <div className="flex flex-col items-center gap-2 text-center">
-      <div
-        className={`relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full sm:h-12 sm:w-12 ${
-          isPlaceholder ? "border border-dashed border-muted bg-transparent" : "bg-card-border"
-        }`}
-      >
-        {logo ? (
-          <Image
-            src={logo}
-            alt={`${name} flag`}
-            width={48}
-            height={48}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <span className={`text-xs font-bold ${isPlaceholder ? "text-muted" : ""}`}>
-            {isPlaceholder ? "?" : (code ?? name.slice(0, 3)).toUpperCase()}
-          </span>
-        )}
-      </div>
-      <span
-        className={`max-w-[6rem] truncate text-xs type-ui sm:max-w-[7rem] sm:text-sm ${
-          isPlaceholder ? "text-muted" : ""
-        }`}
-      >
-        {stripDisplayDashes(name)}
-      </span>
+    <div
+      className={`relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full sm:h-12 sm:w-12 ${
+        isPlaceholder ? "border border-dashed border-muted bg-transparent" : "bg-card-border"
+      }`}
+    >
+      {logo ? (
+        <Image
+          src={logo}
+          alt=""
+          width={48}
+          height={48}
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <span className={`text-xs font-bold ${isPlaceholder ? "text-muted" : ""}`}>
+          {isPlaceholder ? "?" : (code ?? name.slice(0, 3)).toUpperCase()}
+        </span>
+      )}
     </div>
+  );
+}
+
+function TeamName({
+  name,
+  isPlaceholder,
+}: {
+  name: string;
+  isPlaceholder?: boolean;
+}) {
+  return (
+    <span
+      className={`mx-auto block max-w-[6rem] truncate text-center text-xs type-ui sm:max-w-[7rem] sm:text-sm ${
+        isPlaceholder ? "text-muted" : ""
+      }`}
+    >
+      {stripDisplayDashes(name)}
+    </span>
   );
 }
 
@@ -108,24 +110,35 @@ export function MatchCard({ match, compact = false, showMatchNumber = false }: M
         <span>{formatMatchDate(match.date)}</span>
       </div>
 
-      <div className="flex items-center justify-between gap-2">
-        <TeamBadge
-          name={home_team.name}
-          code={home_team.code}
-          logo={home_team.logo}
-          isPlaceholder={home_team.is_placeholder}
-        />
-        <MatchScoreboard
-          homeGoals={match.home_goals}
-          awayGoals={match.away_goals}
-          status={match.status}
-        />
-        <TeamBadge
-          name={away_team.name}
-          code={away_team.code}
-          logo={away_team.logo}
-          isPlaceholder={away_team.is_placeholder}
-        />
+      <div className="match-card-teams">
+        <div className="match-card-teams__row">
+          <div className="flex justify-center">
+            <TeamFlagCircle
+              name={home_team.name}
+              code={home_team.code}
+              logo={home_team.logo}
+              isPlaceholder={home_team.is_placeholder}
+            />
+          </div>
+          <MatchScoreboard
+            homeGoals={match.home_goals}
+            awayGoals={match.away_goals}
+            status={match.status}
+          />
+          <div className="flex justify-center">
+            <TeamFlagCircle
+              name={away_team.name}
+              code={away_team.code}
+              logo={away_team.logo}
+              isPlaceholder={away_team.is_placeholder}
+            />
+          </div>
+        </div>
+        <div className="match-card-teams__row match-card-teams__names">
+          <TeamName name={home_team.name} isPlaceholder={home_team.is_placeholder} />
+          <span aria-hidden="true" />
+          <TeamName name={away_team.name} isPlaceholder={away_team.is_placeholder} />
+        </div>
       </div>
 
       {prediction && canNavigate ? (

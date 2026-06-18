@@ -185,6 +185,23 @@
     }
   }
 
+  .match-card-teams {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .match-card-teams__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.5rem;
+  }
+
+  .match-card-teams__names {
+    row-gap: 0;
+  }
+
   .touch-target {
     min-height: 2.75rem;
     min-width: 2.75rem;

@@ -16,39 +16,27 @@ interface MatchHeaderProps {
   awayGoals?: number | null;
 }
 
-function LargeTeamBadge({ team }: { team: TeamSummary }) {
+function LargeTeamFlag({ team }: { team: TeamSummary }) {
   if (isQatarTeam(team)) {
-    return (
-      <div className="flex flex-col items-center gap-3 text-center">
-        <TeamFlagGlow team={team} size="lg" priority />
-        <p className="max-w-[7rem] font-display type-title text-base sm:max-w-[10rem] sm:text-lg md:max-w-none md:text-xl">
-          {stripDisplayDashes(team.name)}
-        </p>
-      </div>
-    );
+    return <TeamFlagGlow team={team} size="lg" priority />;
   }
 
   return (
-    <div className="flex flex-col items-center gap-3 text-center">
-      <div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 border-card-border bg-card-border sm:h-20 sm:w-20 md:h-24 md:w-24">
-        {team.logo ? (
-          <Image
-            src={team.logo}
-            alt={`${team.name} flag`}
-            width={96}
-            height={96}
-            className="h-full w-full object-cover"
-            priority
-          />
-        ) : (
-          <span className="text-lg font-extrabold text-muted">
-            {team.code ?? team.name.slice(0, 3).toUpperCase()}
-          </span>
-        )}
-      </div>
-      <p className="max-w-[7rem] font-display type-title text-base sm:max-w-[10rem] sm:text-lg md:max-w-none md:text-xl">
-        {stripDisplayDashes(team.name)}
-      </p>
+    <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-card-border bg-card-border sm:h-20 sm:w-20 md:h-24 md:w-24">
+      {team.logo ? (
+        <Image
+          src={team.logo}
+          alt=""
+          width={96}
+          height={96}
+          className="h-full w-full object-cover"
+          priority
+        />
+      ) : (
+        <span className="text-lg font-extrabold text-muted">
+          {team.code ?? team.name.slice(0, 3).toUpperCase()}
+        </span>
+      )}
     </div>
   );
 }
@@ -83,15 +71,30 @@ export function MatchHeader({
         )}
       </div>
 
-      <div className="flex items-center justify-center gap-3 sm:gap-6 md:gap-10">
-        <LargeTeamBadge team={homeTeam} />
-        <MatchScoreboard
-          homeGoals={homeGoals}
-          awayGoals={awayGoals}
-          status={status}
-          size="lg"
-        />
-        <LargeTeamBadge team={awayTeam} />
+      <div className="match-card-teams gap-3 sm:gap-4">
+        <div className="match-card-teams__row gap-x-3 sm:gap-x-6 md:gap-x-10">
+          <div className="flex justify-center">
+            <LargeTeamFlag team={homeTeam} />
+          </div>
+          <MatchScoreboard
+            homeGoals={homeGoals}
+            awayGoals={awayGoals}
+            status={status}
+            size="lg"
+          />
+          <div className="flex justify-center">
+            <LargeTeamFlag team={awayTeam} />
+          </div>
+        </div>
+        <div className="match-card-teams__row match-card-teams__names gap-x-3 sm:gap-x-6 md:gap-x-10">
+          <p className="mx-auto max-w-[7rem] text-center font-display type-title text-base sm:max-w-[10rem] sm:text-lg md:max-w-none md:text-xl">
+            {stripDisplayDashes(homeTeam.name)}
+          </p>
+          <span aria-hidden="true" />
+          <p className="mx-auto max-w-[7rem] text-center font-display type-title text-base sm:max-w-[10rem] sm:text-lg md:max-w-none md:text-xl">
+            {stripDisplayDashes(awayTeam.name)}
+          </p>
+        </div>
       </div>
 
       {venue && (
