@@ -1,9 +1,9 @@
-# Use this file when Netlify "Base directory" is set to frontend/
+# Use this file ONLY when Netlify "Base directory" is set to frontend/
+# (If netlify.toml lives at repo root, Netlify uses that instead.)
 # Do NOT drag-and-drop upload — connect Git and let Netlify build.
 
 [build]
   command = "npm ci && npm run build"
-  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"

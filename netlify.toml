@@ -1,10 +1,14 @@
 # GoalMind — Netlify deploys the Next.js app from frontend/
 # IMPORTANT: Connect GitHub/GitLab (not drag-and-drop). Next.js has no index.html.
+#
+# Netlify UI (when importing repo):
+#   Base directory: leave empty (this file sets base = "frontend")
+#   Build command:   leave empty (read from here)
+#   Publish directory: leave empty (@netlify/plugin-nextjs sets output)
 
 [build]
   base = "frontend"
   command = "npm ci && npm run build"
-  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"

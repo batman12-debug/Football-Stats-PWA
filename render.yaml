@@ -5,6 +5,7 @@ services:
   - type: web
     name: goalmind-api
     runtime: python
+    plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
@@ -16,10 +17,11 @@ services:
         value: hybrid
       - key: ENVIRONMENT
         value: production
+      # Replace with your Netlify URL after first deploy (or checkboardpk.com)
       - key: NEXT_PUBLIC_FRONTEND_URL
-        value: https://footballerz.netlify.app
+        value: https://YOUR-SITE.netlify.app
       - key: CORS_ORIGINS
-        value: https://footballerz.netlify.app
+        value: https://YOUR-SITE.netlify.app
       - key: TRUST_PROXY_HEADERS
         value: "true"
       # Add these in the Render dashboard (sync from backend/.env):

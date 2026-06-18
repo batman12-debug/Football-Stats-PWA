@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "ulimit -n 10240 2>/dev/null; WATCHPACK_POLLING=true next dev",
+    "dev:mobile": "ulimit -n 10240 2>/dev/null; WATCHPACK_POLLING=true next dev -H 0.0.0.0",
     "dev:clean": "lsof -t -i :3000 -i :3001 | xargs kill -9 2>/dev/null; rm -rf .next && npm run dev",
     "build": "next build",
     "start": "next start",
