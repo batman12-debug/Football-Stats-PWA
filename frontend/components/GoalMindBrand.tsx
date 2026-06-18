@@ -14,7 +14,7 @@ export function GoalMindBrand({ className = "" }: GoalMindBrandProps) {
     >
       <GoalMindLogo className="h-10 w-auto transition-transform duration-200 group-hover:scale-105 sm:h-11" />
       <span className="font-display type-title text-base sm:text-lg">
-        Goal<span className="text-win">Mind</span>
+        Check<span className="text-win">Board</span>
       </span>
     </Link>
   );

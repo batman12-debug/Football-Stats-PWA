@@ -9,7 +9,7 @@ export default async function HomePage() {
     return (
       <main className="container mx-auto bg-black px-4 py-8 sm:py-10">
         <div className="rounded-xl border border-card-border bg-card p-8 text-center">
-          <h1 className="text-2xl font-extrabold">GoalMind</h1>
+          <h1 className="text-2xl font-extrabold">CheckBoard</h1>
           <p className="mt-4 text-muted">
             Tournament data unavailable. The API backend is not reachable from this site.
           </p>

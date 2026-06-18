@@ -4,11 +4,12 @@
 # Netlify UI (when importing repo):
 #   Base directory: leave empty (this file sets base = "frontend")
 #   Build command:   leave empty (read from here)
-#   Publish directory: leave empty (@netlify/plugin-nextjs sets output)
+#   Publish directory: leave empty in UI (this file sets publish = ".next" relative to base)
 
 [build]
   base = "frontend"
   command = "npm ci && npm run build"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"

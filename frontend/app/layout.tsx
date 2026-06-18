@@ -19,7 +19,7 @@ const gondens = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "GoalMind World Cup 2026 Predictions",
+  title: "CheckBoard World Cup 2026 Predictions",
   description: "AI powered match predictions for FIFA World Cup 2026",
 };
 
