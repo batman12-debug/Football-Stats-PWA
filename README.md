@@ -1,3 +1,13 @@
+---
+title: GoalMind API
+emoji: ⚽
+colorFrom: green
+colorTo: blue
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # GoalMind
 
 World Cup 2026 match prediction web app. Predicts match outcomes using team statistics and historical data from API-Football.
