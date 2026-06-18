@@ -1,0 +1,13 @@
+frontend/
+.git/
+**/__pycache__
+**/*.pyc
+**/.env
+**/.env.*
+**/.venv
+.next/
+node_modules/
+*.md
+!backend/**/*.md
+.agents/
+skills-lock.json
