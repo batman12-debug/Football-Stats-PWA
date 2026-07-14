@@ -23,7 +23,10 @@ from app.services.api_football import (
 )
 from app.services.data_sources.aggregator import compute_team_stats, h2h_win_rate
 from app.services.data_sources.bracket import build_tournament_bracket
-from app.services.data_sources.results_store import get_memory_results, set_result
+from app.services.data_sources.results_store import (
+    load_results_for_fixtures,
+    set_result,
+)
 from app.services.data_sources.openfootball import (
     OpenFootballError,
     fixture_id as openfootball_fixture_id,
@@ -117,6 +120,38 @@ async def _enrich_bracket(bracket: TournamentBracketResponse) -> TournamentBrack
             stages_out.append(stage.model_copy(update={"fixtures": list(fixtures)}))
 
     return bracket.model_copy(update={"stages": stages_out})
+
+
+def _iter_bracket_fixtures(
+    bracket: TournamentBracketResponse,
+) -> list[BracketFixtureSummary]:
+    fixtures: list[BracketFixtureSummary] = []
+    for stage in bracket.stages:
+        if stage.groups:
+            for group in stage.groups:
+                fixtures.extend(group.fixtures)
+        fixtures.extend(stage.fixtures)
+    return fixtures
+
+
+def _collect_bracket_scores(
+    bracket: TournamentBracketResponse,
+) -> dict[int, tuple[int, int]]:
+    """Finished scores from the bracket — used to advance knockout placeholders."""
+    scores: dict[int, tuple[int, int]] = {}
+    for fixture in _iter_bracket_fixtures(bracket):
+        if fixture.home_goals is None or fixture.away_goals is None:
+            continue
+        if fixture.status not in {"FT", "AET", "PEN"} and not (
+            fixture.home_resolved and fixture.away_resolved
+        ):
+            continue
+        if fixture.home_goals == fixture.away_goals and fixture.status not in {"AET", "PEN"}:
+            # Draws with no pen/ET winner don't advance knockout slots
+            if fixture.stage != "group_stage":
+                continue
+        scores[fixture.id] = (fixture.home_goals, fixture.away_goals)
+    return scores
 
 
 class ResourceNotFoundError(Exception):
@@ -328,11 +363,36 @@ async def get_tournament_bracket(*, force_refresh: bool = False) -> TournamentBr
         and _bracket_cache is not None
         and now - _bracket_cache_at < _BRACKET_CACHE_TTL
     ):
-        return await _enrich_bracket(_bracket_cache)
+        enriched = await _enrich_bracket(_bracket_cache)
+        enriched_scores = _collect_bracket_scores(enriched)
+        cached_scores = _collect_bracket_scores(_bracket_cache)
+        if enriched_scores == cached_scores:
+            return enriched
+        # New FT scores (e.g. QF just finished) — fall through and rebuild below
+        force_refresh = True
+        seed_scores = enriched_scores
+    else:
+        seed_scores = {}
 
     raw = await get_openfootball_client().get_all_matches()
-    data = await build_tournament_bracket(raw, stored_results=get_memory_results())
-    _bracket_cache = await _enrich_bracket(TournamentBracketResponse(**data))
+    fixture_ids = [openfootball_fixture_id(m, i) for i, m in enumerate(raw)]
+    stored = await load_results_for_fixtures(fixture_ids)
+    if seed_scores:
+        stored = {**stored, **seed_scores}
+
+    data = await build_tournament_bracket(raw, stored_results=stored)
+    bracket = await _enrich_bracket(TournamentBracketResponse(**data))
+
+    # ESPN/admin scores arrive during enrichment. Rebuild so "Winner of Match N"
+    # semi/final slots resolve to the actual teams.
+    enriched_scores = _collect_bracket_scores(bracket)
+    if enriched_scores:
+        merged = {**stored, **enriched_scores}
+        if merged != stored:
+            data = await build_tournament_bracket(raw, stored_results=merged)
+            bracket = await _enrich_bracket(TournamentBracketResponse(**data))
+
+    _bracket_cache = bracket
     _bracket_cache_at = now
     return _bracket_cache
 

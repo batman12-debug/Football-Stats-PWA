@@ -49,3 +49,21 @@ async def set_result(fixture_id: int, home_goals: int, away_goals: int) -> None:
         return
 
     await set_cached(_key(fixture_id), json.dumps(payload), ttl_seconds=RESULT_TTL)
+
+
+async def load_results_for_fixtures(
+    fixture_ids: list[int],
+) -> dict[int, tuple[int, int]]:
+    """Load stored scores for known fixture IDs (memory first, then Redis)."""
+    out: dict[int, tuple[int, int]] = dict(get_memory_results())
+    for fid in fixture_ids:
+        if fid in out:
+            continue
+        result = await get_result(fid)
+        if result is None:
+            continue
+        try:
+            out[fid] = (int(result["home_goals"]), int(result["away_goals"]))
+        except (KeyError, TypeError, ValueError):
+            continue
+    return out
