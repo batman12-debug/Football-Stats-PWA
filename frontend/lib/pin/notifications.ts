@@ -12,6 +12,7 @@ export interface NotificationDeps {
   getNotification: () => typeof Notification | undefined;
   getPermission: () => NotificationPermission;
   requestPermission: () => Promise<NotificationPermission>;
+  /** Replace/coalesce via tag — must NOT close the previous notification first. */
   show: (args: { title: string; options: NotificationOptions }) => void;
   closeByTag: (tag: string) => void;
 }
@@ -27,7 +28,8 @@ export function createBrowserNotificationDeps(): NotificationDeps {
     getPermission: () => Notification.permission,
     requestPermission: () => Notification.requestPermission(),
     show: ({ title, options }) => {
-      lastInstance?.close();
+      // Do not close the previous instance — same `tag` + renotify:false replaces
+      // quietly in the notification centre instead of re-alerting.
       const n = new Notification(title, options);
       lastInstance = n;
       n.onclick = () => {
@@ -52,8 +54,15 @@ export function createBrowserNotificationDeps(): NotificationDeps {
   };
 }
 
+function sameContent(
+  a: NotificationShowInput | null,
+  b: NotificationShowInput
+): boolean {
+  return !!a && a.title === b.title && a.body === b.body && a.matchPath === b.matchPath;
+}
+
 export function createNotificationController(deps: NotificationDeps) {
-  let last: { close: () => void } | null = null;
+  let lastShown: NotificationShowInput | null = null;
 
   return {
     getPermission(): NotificationPermission | "unsupported" {
@@ -72,7 +81,11 @@ export function createNotificationController(deps: NotificationDeps) {
       const permission = deps.getPermission();
       if (permission !== "granted") return "denied";
 
-      last?.close();
+      // Poll every ~10s; only push to the OS when text actually changes.
+      if (sameContent(lastShown, input)) {
+        return "shown";
+      }
+
       const options = {
         body: input.body,
         tag: NOTIFICATION_TAG,
@@ -81,19 +94,13 @@ export function createNotificationController(deps: NotificationDeps) {
         data: { url: input.matchPath },
       } as NotificationOptions;
       deps.show({ title: input.title, options });
-      last = {
-        close: () => deps.closeByTag(NOTIFICATION_TAG),
-      };
+      lastShown = { ...input };
       return "shown";
     },
 
     close() {
-      try {
-        last?.close();
-      } finally {
-        last = null;
-        deps.closeByTag(NOTIFICATION_TAG);
-      }
+      lastShown = null;
+      deps.closeByTag(NOTIFICATION_TAG);
     },
   };
 }
