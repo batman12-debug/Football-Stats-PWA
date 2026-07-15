@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 
+import { PinProvider } from "@/components/pin/PinContext";
+import { PinSessionProvider } from "@/components/pin/PinSessionProvider";
 import { SiteHeader } from "@/components/SiteHeader";
 import "./globals.css";
 
@@ -45,8 +47,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${gondens.variable} bg-black`}>
       <body className="min-h-screen bg-black font-sans text-base text-white antialiased">
-        <SiteHeader />
-        {children}
+        <PinProvider>
+          <PinSessionProvider>
+            <SiteHeader />
+            {children}
+          </PinSessionProvider>
+        </PinProvider>
       </body>
     </html>
   );
