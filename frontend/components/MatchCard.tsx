@@ -109,6 +109,15 @@ export function MatchCard({ match, compact = false, showMatchNumber = false }: M
           awayName={away_team.name}
           homeCode={home_team.code}
           awayCode={away_team.code}
+          homeLogo={home_team.logo}
+          awayLogo={away_team.logo}
+          stageLabel={
+            "round_name" in match && typeof match.round_name === "string"
+              ? match.round_name
+              : "stage" in match && typeof match.stage === "string"
+                ? match.stage
+                : null
+          }
           kickoffIso={match.date}
           className="absolute right-2 top-2"
         />

@@ -67,6 +67,9 @@ export function MatchHeader({
         awayName={awayTeam.name}
         homeCode={homeTeam.code}
         awayCode={awayTeam.code}
+        homeLogo={homeTeam.logo}
+        awayLogo={awayTeam.logo}
+        stageLabel={null}
         kickoffIso={date}
         className="absolute right-3 top-3 sm:right-4 sm:top-4"
       />

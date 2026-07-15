@@ -26,10 +26,24 @@ export function createMemoryStorage(): Storage {
   };
 }
 
-function isPinEntry(value: unknown): value is PinEntry {
-  if (!value || typeof value !== "object") return false;
+function normalizePinEntry(value: unknown): PinEntry | null {
+  if (!value || typeof value !== "object") return null;
   const v = value as Record<string, unknown>;
-  return typeof v.fixtureId === "string" && typeof v.homeName === "string" && typeof v.awayName === "string";
+  if (typeof v.fixtureId !== "string" || typeof v.homeName !== "string" || typeof v.awayName !== "string") {
+    return null;
+  }
+  return {
+    fixtureId: v.fixtureId,
+    homeName: v.homeName,
+    awayName: v.awayName,
+    homeCode: typeof v.homeCode === "string" ? v.homeCode : null,
+    awayCode: typeof v.awayCode === "string" ? v.awayCode : null,
+    homeLogo: typeof v.homeLogo === "string" ? v.homeLogo : null,
+    awayLogo: typeof v.awayLogo === "string" ? v.awayLogo : null,
+    stageLabel: typeof v.stageLabel === "string" ? v.stageLabel : null,
+    kickoffIso: typeof v.kickoffIso === "string" ? v.kickoffIso : "",
+    pinnedAt: typeof v.pinnedAt === "number" ? v.pinnedAt : 0,
+  };
 }
 
 export function loadQueue(storage: Storage): PinEntry[] {
@@ -38,7 +52,7 @@ export function loadQueue(storage: Storage): PinEntry[] {
     if (!raw) return [];
     const parsed = JSON.parse(raw) as unknown;
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter(isPinEntry);
+    return parsed.map(normalizePinEntry).filter((e): e is PinEntry => e !== null);
   } catch {
     return [];
   }

@@ -17,6 +17,9 @@ function entry(id: string, home = "France"): PinEntry {
     awayName: "Spain",
     homeCode: "FRA",
     awayCode: "ESP",
+    homeLogo: null,
+    awayLogo: null,
+    stageLabel: null,
     kickoffIso: "2026-07-15T18:00:00Z",
     pinnedAt: 1,
   };

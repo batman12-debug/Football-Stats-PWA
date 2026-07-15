@@ -8,6 +8,9 @@ const baseEntry = (id: string): PinEntry => ({
   awayName: "Spain",
   homeCode: "FRA",
   awayCode: "ESP",
+  homeLogo: null,
+  awayLogo: null,
+  stageLabel: "Semi-finals",
   kickoffIso: "2026-07-15T18:00:00Z",
   pinnedAt: 1,
 });
@@ -23,6 +26,7 @@ describe("createPinSession", () => {
       upsertNotification: upsert,
       closeNotification: close,
       onDequeue: vi.fn(),
+      buildCard: async () => null,
       now: () => 0,
     });
     await session.tick();
@@ -31,8 +35,9 @@ describe("createPinSession", () => {
     expect(close).toHaveBeenCalled();
   });
 
-  it("upserts live notification for active match", async () => {
+  it("upserts CheckBoard-branded live notification for active match", async () => {
     const upsert = vi.fn().mockResolvedValue("shown");
+    const buildCard = vi.fn().mockResolvedValue("data:image/png;base64,abc");
     const session = createPinSession({
       getQueue: () => [baseEntry("42")],
       fetchStats: async () => ({
@@ -50,15 +55,20 @@ describe("createPinSession", () => {
       upsertNotification: upsert,
       closeNotification: vi.fn(),
       onDequeue: vi.fn(),
+      buildCard,
       now: () => 0,
     });
     await session.tick();
     expect(upsert).toHaveBeenCalledWith(
       expect.objectContaining({
+        title: "CheckBoard",
         matchPath: "/match/42",
         body: expect.stringContaining("67"),
+        icon: "/icon.png",
+        image: "data:image/png;base64,abc",
       })
     );
+    expect(buildCard).toHaveBeenCalled();
   });
 
   it("on FT shows final then dequeues", async () => {
@@ -84,6 +94,7 @@ describe("createPinSession", () => {
       upsertNotification: upsert,
       closeNotification: vi.fn(),
       onDequeue,
+      buildCard: async () => null,
       now: () => 0,
     });
     await session.tick();
@@ -100,9 +111,9 @@ describe("createPinSession", () => {
       upsertNotification: upsert,
       closeNotification: vi.fn(),
       onDequeue,
+      buildCard: async () => null,
       now: () => 0,
     });
-    // Seed last known via a prior successful tick would be ideal; for null snapshot, still upsert upcoming from entry metadata — must NOT dequeue.
     await session.tick();
     expect(onDequeue).not.toHaveBeenCalled();
   });

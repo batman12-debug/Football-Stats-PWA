@@ -4,6 +4,10 @@ export interface NotificationShowInput {
   title: string;
   body: string;
   matchPath: string;
+  /** Absolute or path URL for the small notification icon (CheckBoard). */
+  icon?: string;
+  /** Rich preview image (data URL or absolute URL). */
+  image?: string | null;
 }
 
 export type UpsertResult = "shown" | "denied" | "unsupported";
@@ -58,7 +62,25 @@ function sameContent(
   a: NotificationShowInput | null,
   b: NotificationShowInput
 ): boolean {
-  return !!a && a.title === b.title && a.body === b.body && a.matchPath === b.matchPath;
+  return (
+    !!a &&
+    a.title === b.title &&
+    a.body === b.body &&
+    a.matchPath === b.matchPath &&
+    (a.icon ?? "") === (b.icon ?? "") &&
+    (a.image ?? "") === (b.image ?? "")
+  );
+}
+
+function resolveAssetUrl(pathOrUrl: string | undefined): string | undefined {
+  if (!pathOrUrl) return undefined;
+  if (pathOrUrl.startsWith("data:") || /^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
+  if (typeof window === "undefined") return pathOrUrl;
+  try {
+    return new URL(pathOrUrl, window.location.origin).href;
+  } catch {
+    return pathOrUrl;
+  }
 }
 
 export function createNotificationController(deps: NotificationDeps) {
@@ -81,10 +103,13 @@ export function createNotificationController(deps: NotificationDeps) {
       const permission = deps.getPermission();
       if (permission !== "granted") return "denied";
 
-      // Poll every ~10s; only push to the OS when text actually changes.
+      // Poll every ~10s; only push to the OS when content actually changes.
       if (sameContent(lastShown, input)) {
         return "shown";
       }
+
+      const icon = resolveAssetUrl(input.icon);
+      const image = input.image ? resolveAssetUrl(input.image) : undefined;
 
       const options = {
         body: input.body,
@@ -92,6 +117,8 @@ export function createNotificationController(deps: NotificationDeps) {
         renotify: false,
         silent: true,
         data: { url: input.matchPath },
+        ...(icon ? { icon } : {}),
+        ...(image ? { image } : {}),
       } as NotificationOptions;
       deps.show({ title: input.title, options });
       lastShown = { ...input };

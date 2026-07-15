@@ -9,6 +9,9 @@ interface PinButtonProps {
   awayName: string;
   homeCode: string | null;
   awayCode: string | null;
+  homeLogo?: string | null;
+  awayLogo?: string | null;
+  stageLabel?: string | null;
   kickoffIso: string;
   className?: string;
 }
@@ -19,6 +22,9 @@ export function PinButton({
   awayName,
   homeCode,
   awayCode,
+  homeLogo = null,
+  awayLogo = null,
+  stageLabel = null,
   kickoffIso,
   className = "",
 }: PinButtonProps) {
@@ -40,6 +46,9 @@ export function PinButton({
       awayName,
       homeCode,
       awayCode,
+      homeLogo,
+      awayLogo,
+      stageLabel,
       kickoffIso,
       pinnedAt: Date.now(),
     });
