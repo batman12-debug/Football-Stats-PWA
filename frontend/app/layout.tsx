@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 
 import { PinProvider } from "@/components/pin/PinContext";
+import { PinQueueSheet } from "@/components/pin/PinQueueSheet";
 import { PinSessionProvider } from "@/components/pin/PinSessionProvider";
 import { SiteHeader } from "@/components/SiteHeader";
 import "./globals.css";
@@ -51,6 +52,7 @@ export default function RootLayout({
           <PinSessionProvider>
             <SiteHeader />
             {children}
+            <PinQueueSheet />
           </PinSessionProvider>
         </PinProvider>
       </body>

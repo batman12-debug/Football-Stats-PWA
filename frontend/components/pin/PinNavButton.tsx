@@ -5,12 +5,13 @@ import { usePinQueue } from "@/components/pin/PinContext";
 export function PinNavButton() {
   const { entries, setSheetOpen } = usePinQueue();
   const count = entries.length;
+  const label = count > 0 ? `Pinned (${count})` : "Pinned";
 
   return (
     <button
       type="button"
-      aria-label="Pinned"
-      title="Pinned"
+      aria-label={label}
+      title={label}
       onClick={() => setSheetOpen(true)}
       className="group relative inline-flex touch-target shrink-0 items-center justify-center rounded-md p-2 text-muted transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-win/50 sm:min-h-9 sm:min-w-9 sm:p-1.5"
     >

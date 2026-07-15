@@ -5,7 +5,6 @@ import { HeaderNavLink } from "@/components/HeaderNavLink";
 import { MatchesNavMenu } from "@/components/MatchesNavMenu";
 import { NavIconSkeleton } from "@/components/NavIcon";
 import { PinNavButton } from "@/components/pin/PinNavButton";
-import { PinQueueSheet } from "@/components/pin/PinQueueSheet";
 
 export function SiteHeader() {
   return (
@@ -32,7 +31,6 @@ export function SiteHeader() {
           <PinNavButton />
         </nav>
       </div>
-      <PinQueueSheet />
     </header>
   );
 }
