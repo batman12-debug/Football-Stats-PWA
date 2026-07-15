@@ -4,6 +4,8 @@ import { GoalMindBrand } from "@/components/GoalMindBrand";
 import { HeaderNavLink } from "@/components/HeaderNavLink";
 import { MatchesNavMenu } from "@/components/MatchesNavMenu";
 import { NavIconSkeleton } from "@/components/NavIcon";
+import { PinNavButton } from "@/components/pin/PinNavButton";
+import { PinQueueSheet } from "@/components/pin/PinQueueSheet";
 
 export function SiteHeader() {
   return (
@@ -27,8 +29,10 @@ export function SiteHeader() {
           </Suspense>
           <HeaderNavLink href="/teams" label="Teams" iconSrc="/icons/nav/teams.png" />
           <HeaderNavLink href="/news" label="News" iconSrc="/icons/nav/news.png" />
+          <PinNavButton />
         </nav>
       </div>
+      <PinQueueSheet />
     </header>
   );
 }
