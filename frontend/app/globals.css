@@ -636,3 +636,10 @@
 .nav-icon-img {
   filter: brightness(0) invert(1);
 }
+
+/* Pin toggle — hover affordance only for fine-pointer devices that truly hover */
+@media (hover: hover) and (pointer: fine) {
+  .pin-button:hover {
+    opacity: 0.85;
+  }
+}

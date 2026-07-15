@@ -45,6 +45,7 @@ export default async function MatchDetailPage({ params }: MatchDetailPageProps) 
           {stripDisplayDashes(match.home_team.name)} vs {stripDisplayDashes(match.away_team.name)}
         </h1>
         <MatchHeader
+          fixtureId={params.id}
           homeTeam={match.home_team}
           awayTeam={match.away_team}
           date={match.date}

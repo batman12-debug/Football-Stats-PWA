@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { MiniPredictionBar } from "@/components/MiniPredictionBar";
 import { MatchScoreboard } from "@/components/MatchScoreboard";
 import { TeamFlagGlow } from "@/components/TeamFlagGlow";
+import { PinButton } from "@/components/pin/PinButton";
 import { isQatarTeam } from "@/lib/isQatarTeam";
 import type { MatchWithPrediction } from "@/types";
 import { formatMatchDate, isLiveStatus, stripDisplayDashes } from "@/lib/utils";
@@ -93,7 +94,7 @@ export function MatchCard({ match, compact = false, showMatchNumber = false }: M
 
   const content = (
     <article
-      className={`flex h-full flex-col gap-3 rounded-xl border bg-card transition-colors ${
+      className={`relative flex h-full flex-col gap-3 rounded-xl border bg-card transition-colors ${
         compact ? "p-3" : "gap-4 p-4"
       } ${
         isLive
@@ -101,6 +102,27 @@ export function MatchCard({ match, compact = false, showMatchNumber = false }: M
           : "border-card-border"
       } ${canNavigate ? "group-hover:border-win/30" : "opacity-90"}`}
     >
+      {canNavigate && (
+        <PinButton
+          fixtureId={String(match.id)}
+          homeName={home_team.name}
+          awayName={away_team.name}
+          homeCode={home_team.code}
+          awayCode={away_team.code}
+          homeLogo={home_team.logo}
+          awayLogo={away_team.logo}
+          stageLabel={
+            "round_name" in match && typeof match.round_name === "string"
+              ? match.round_name
+              : "stage" in match && typeof match.stage === "string"
+                ? match.stage
+                : null
+          }
+          kickoffIso={match.date}
+          className="absolute right-2 top-2"
+        />
+      )}
+
       <div className="type-caps flex items-center justify-center gap-2 text-center text-xs text-muted">
         {showMatchNumber && match.match_number && (
           <span className="rounded bg-card-border px-1.5 py-0.5 text-[10px]">
