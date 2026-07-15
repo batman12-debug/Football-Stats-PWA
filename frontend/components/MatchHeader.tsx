@@ -2,11 +2,13 @@ import Image from "next/image";
 
 import { MatchScoreboard } from "@/components/MatchScoreboard";
 import { TeamFlagGlow } from "@/components/TeamFlagGlow";
+import { PinButton } from "@/components/pin/PinButton";
 import { isQatarTeam } from "@/lib/isQatarTeam";
 import type { TeamSummary } from "@/types";
 import { formatMatchDate, isLiveStatus, stripDisplayDashes } from "@/lib/utils";
 
 interface MatchHeaderProps {
+  fixtureId: string;
   homeTeam: TeamSummary;
   awayTeam: TeamSummary;
   date: string;
@@ -42,6 +44,7 @@ function LargeTeamFlag({ team }: { team: TeamSummary }) {
 }
 
 export function MatchHeader({
+  fixtureId,
   homeTeam,
   awayTeam,
   date,
@@ -54,10 +57,20 @@ export function MatchHeader({
 
   return (
     <header
-      className={`rounded-xl border bg-card p-4 sm:p-6 md:p-8 ${
+      className={`relative rounded-xl border bg-card p-4 sm:p-6 md:p-8 ${
         isLive ? "border-loss/40 ring-1 ring-loss/20" : "border-card-border"
       }`}
     >
+      <PinButton
+        fixtureId={fixtureId}
+        homeName={homeTeam.name}
+        awayName={awayTeam.name}
+        homeCode={homeTeam.code}
+        awayCode={awayTeam.code}
+        kickoffIso={date}
+        className="absolute right-3 top-3 sm:right-4 sm:top-4"
+      />
+
       <div className="type-caps mb-4 flex flex-wrap items-center justify-center gap-2 text-center text-xs text-muted">
         <span>{formatMatchDate(date)}</span>
         <span aria-hidden="true">·</span>
