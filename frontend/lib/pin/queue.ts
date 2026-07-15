@@ -15,7 +15,7 @@ export function createMemoryStorage(): Storage {
       return map.has(key) ? map.get(key)! : null;
     },
     key(index: number) {
-      return [...map.keys()][index] ?? null;
+      return Array.from(map.keys())[index] ?? null;
     },
     removeItem(key: string) {
       map.delete(key);

@@ -73,13 +73,13 @@ export function createNotificationController(deps: NotificationDeps) {
       if (permission !== "granted") return "denied";
 
       last?.close();
-      const options: NotificationOptions = {
+      const options = {
         body: input.body,
         tag: NOTIFICATION_TAG,
         renotify: false,
         silent: true,
         data: { url: input.matchPath },
-      };
+      } as NotificationOptions;
       deps.show({ title: input.title, options });
       last = {
         close: () => deps.closeByTag(NOTIFICATION_TAG),
